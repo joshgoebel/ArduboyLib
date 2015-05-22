@@ -544,7 +544,7 @@ void Arduboy::drawBitmap
 }
 
 void Arduboy::drawChar
-(int16_t x, int16_t y, unsigned char c, uint8_t color, uint16_t bg, uint8_t size)
+(int16_t x, int16_t y, unsigned char c, uint8_t color, uint8_t bg, uint8_t size)
 {
 
   if ((x >= WIDTH) ||         // Clip right
