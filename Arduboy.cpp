@@ -76,6 +76,22 @@ void Arduboy::start()
   SPI.transfer(end & 0x07);
 
   LCDDataMode();
+  #ifdef SAFE_MODE
+  if (pressed(LEFT_BUTTON+UP_BUTTON))
+    safeMode();
+  #endif
+}
+
+void Arduboy::safeMode()
+{
+  setCursor(32, 0);
+  setTextSize(1);
+  print("SAFE MODE\n");
+  print("Power cycle to reboot.");
+  display();
+  while (true) {
+    delay(100);
+  }
 }
 
 void Arduboy::LCDDataMode()
