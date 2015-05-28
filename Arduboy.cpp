@@ -691,7 +691,7 @@ void Arduboy::setCursor(int16_t x, int16_t y)
 
 void Arduboy::setTextSize(uint8_t s)
 {
-  textsize = (s > 0) ? s : 1;
+  textsize = min(s,1);
 }
 
 void Arduboy::setTextWrap(boolean w)
