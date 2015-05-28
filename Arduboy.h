@@ -41,8 +41,10 @@
 #define WIDTH 128
 #define HEIGHT 64
 
+// draw colors
 #define WHITE 1
 #define BLACK 0
+#define TRANSPARENT 255
 
 #define COLUMN_ADDRESS_END (WIDTH - 1) & 0x7F
 #define PAGE_ADDRESS_END ((HEIGHT/8)-1) & 0x07
@@ -87,6 +89,15 @@ public:
   void setCursor(int16_t x, int16_t y);
   void setTextSize(uint8_t s);
   void setTextWrap(boolean w);
+
+  /* drawing functions that take physics objects */
+  void drawPixel(Point point);
+  void drawLine(Point p1, Point p2);
+  void drawRect(Rect rect);
+  void fillRect(Rect rect);
+  void drawRoundRect(Rect rect, int16_t radius);
+  void fillRoundRect(Rect rect, int16_t radius);
+
   inline unsigned char* getBuffer();
   uint8_t width();
   uint8_t height();
@@ -108,6 +119,8 @@ private:
 
 // Adafruit stuff
 protected:
+  int16_t drawColor = WHITE;
+  int16_t drawBackground = TRANSPARENT;
   int16_t cursor_x = 0;
   int16_t cursor_y = 0;
   uint8_t textsize = 1;

@@ -632,6 +632,41 @@ void Arduboy::drawChar
   }
 }
 
+/* drawing against physics objects */
+
+void Arduboy::drawPixel(Point point)
+{
+  drawPixel(point.x, point.y, drawColor);
+}
+
+void Arduboy::drawLine(Point p1, Point p2)
+{
+ drawLine(p1.x, p1.y, p2.x, p2.y, drawColor);
+}
+
+void Arduboy::drawRect(Rect rect)
+{
+  drawRect(rect.x, rect.y, rect.width, rect.height, drawColor);
+}
+
+void Arduboy::fillRect(Rect rect)
+{
+  fillRect(rect.x, rect.y, rect.width, rect.height, drawColor);
+}
+
+void Arduboy::drawRoundRect(Rect rect, int16_t radius)
+{
+  drawRoundRect(rect.x, rect.y, rect.width, rect.height, radius, drawColor);
+}
+
+void Arduboy::fillRoundRect(Rect rect, int16_t radius)
+{
+  fillRoundRect(rect.x, rect.y, rect.width, rect.height, radius, drawColor);
+}
+
+
+/* drawing setup functoins */
+
 void Arduboy::setCursor(int16_t x, int16_t y)
 {
   cursor_x = x;
