@@ -3,6 +3,12 @@
 
 Arduboy::Arduboy() { }
 
+// Arduino's main.cpp wrapper calls this before setup() to allow custom
+// hardware to perform it's own specific setup steps
+void initVariant() {
+  // would sure be nice if we could call start() here somehow
+}
+
 void Arduboy::start()
 {
   #if F_CPU == 8000000L
