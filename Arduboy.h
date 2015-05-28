@@ -86,11 +86,17 @@ public:
   void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint8_t color);
   void drawSlowXYBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint8_t color);
   void drawChar(int16_t x, int16_t y, unsigned char c, uint8_t color, uint8_t bg, uint8_t size);
+
+  /* drawing setup functoins */
+
   void setCursor(int16_t x, int16_t y);
   void setTextSize(uint8_t s);
   void setTextWrap(boolean w);
+  void setColor(uint8_t color);
+  void setColor(uint8_t color, uint8_t background);
 
   /* drawing functions that take physics objects */
+
   void drawPixel(Point point);
   void drawLine(Point p1, Point p2);
   void drawRect(Rect rect);
@@ -119,8 +125,8 @@ private:
 
 // Adafruit stuff
 protected:
-  int16_t drawColor = WHITE;
-  int16_t drawBackground = TRANSPARENT;
+  int8_t drawColor = WHITE;
+  int8_t drawBackground = TRANSPARENT;
   int16_t cursor_x = 0;
   int16_t cursor_y = 0;
   uint8_t textsize = 1;

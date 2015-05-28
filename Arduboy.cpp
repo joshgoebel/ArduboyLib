@@ -667,6 +667,17 @@ void Arduboy::fillRoundRect(Rect rect, int16_t radius)
 
 /* drawing setup functoins */
 
+void Arduboy::setColor(uint8_t color)
+{
+  drawColor = color;
+}
+
+void Arduboy::setColor(uint8_t color, uint8_t background)
+{
+ drawColor = color;
+ drawBackground = background;
+}
+
 void Arduboy::setCursor(int16_t x, int16_t y)
 {
   cursor_x = x;
