@@ -15,6 +15,7 @@
 
 // eeprom settings above are neded for audio
 #include "audio.h"
+#include "physics.h"
 
 #define PIXEL_SAFE_MODE
 #define SAFE_MODE

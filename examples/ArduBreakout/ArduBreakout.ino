@@ -18,11 +18,13 @@
 #include "breakout_bitmaps.h"
 
 Arduboy arduboy;
+Physics physics;
 
 int dx = -1;        //Initial movement of ball
 int dy = -1;        //Initial movement of ball
-int xb;           //Balls starting possition
-int yb;           //Balls starting possition
+// int bx;           //Balls starting possition
+// int by;           //Balls starting possition
+Rect ball = { .x = 0, .y = 0, .width = 2 , .height = 2 };
 boolean released;     //If the ball has been released by the player
 boolean paused = false;   //If the game has been paused
 byte xPaddle;       //X position of paddle
@@ -74,8 +76,6 @@ void intro()
 void setup()
 {
   arduboy.start();
-  arduboy.print("Hello World!");
-  arduboy.display();
   intro();
 }
 
@@ -105,29 +105,31 @@ void moveBall()
   if(released)
   {
     //Move ball
-    xb=xb + dx;
-    yb=yb + dy;
+    ball.x=ball.x + dx;
+    ball.y=ball.y + dy;
 
     //Set bounds
-    leftBall = xb;
-    rightBall = xb + 2;
-    topBall = yb;
-    bottomBall = yb + 2;
+    leftBall = ball.x;
+    rightBall = ball.x + 2;
+    topBall = ball.y;
+    bottomBall = ball.y + 2;
 
     //Bounce off top edge
-    if (yb <= 0)
+    // if (ball.y <= 0)
+    if (physics.collide(ball, TOP_EDGE))
     {
-      yb = 2;
+      ball.y = 2;
       dy = -dy;
       arduboy.audio.tone(1, 523, 250);
     }
 
     //Lose a life if bottom edge hit
-    if (yb >= 64)
+    // if (ball.y >= 64)
+    if (physics.collide(ball, BOTTOM_EDGE))
     {
       arduboy.drawRect(xPaddle, 63, 11, 1, 0);
       xPaddle = 54;
-      yb=60;
+      ball.y=60;
       released = false;
       lives--;
       drawLives();
@@ -143,26 +145,30 @@ void moveBall()
     }
 
     //Bounce off left side
-    if (xb <= 0)
+    // if (ball.x <= 0)
+    if (physics.collide(ball, LEFT_EDGE))
     {
-      xb = 2;
+      ball.x = 2;
       dx = -dx;
       arduboy.audio.tone(1, 523, 250);
     }
 
     //Bounce off right side
-    if (xb >= WIDTH - 2)
+    // if (ball.x >= width - 2)
+    if (physics.collide(ball, RIGHT_EDGE))
     {
-      xb = WIDTH - 4;
+      ball.x = WIDTH - 4;
       dx = -dx;
       arduboy.audio.tone(1, 523, 250);
     }
 
-    //Bounce off paddle
-    if (xb+1>=xPaddle && xb<=xPaddle+12 && yb+2>=63 && yb<=64)
+    //Bounce off paddleball.x
+    // if (ball.x+1>=xPaddle && ball.x<=xPaddle+12 && ball.y+2>=63 && ball.y<=64)
+    Rect paddle = { .x = xPaddle, .y = 63, .width = 12, .height = 2};
+    if (physics.collide(ball, paddle))
     {
       dy = -dy;
-      dx = ((xb-(xPaddle+6))/3); //Applies spin on the ball
+      dx = ((ball.x-(xPaddle+6))/3); //Applies spin on the ball
       arduboy.audio.tone(1, 200, 250);
     }
 
@@ -173,15 +179,13 @@ void moveBall()
       {
         if (!isHit[row][column])
         {
-          //Sets Brick bounds
-          leftBrick = 10 * column;
-          rightBrick = 10 * column + 10;
-          topBrick = 6 * row + 1;
-          bottomBrick = 6 * row + 7;
-
           //If A collison has occured
-          if (topBall <= bottomBrick && bottomBall >= topBrick &&
-              leftBall <= rightBrick && rightBall >= leftBrick)
+          // if (topBall <= bottomBrick && bottomBall >= topBrick &&
+              // leftBall <= rightBrick && rightBall >= leftBrick)
+          // brick location and bounds
+          Rect brick = {.x = 10*column, .y = 6*row+1,
+            .width = 10, .height = 7};
+          if (physics.collide(brick, ball))
           {
             Score();
             brickCount++;
@@ -195,7 +199,7 @@ void moveBall()
               if(!bounced)
               {
                 dy =- dy;
-                yb += dy;
+                ball.y += dy;
                 bounced = true;
                 arduboy.audio.tone(1, 261, 250);
               }
@@ -208,7 +212,7 @@ void moveBall()
               if(!bounced)
               {
                 dx =- dx;
-                xb += dx;
+                ball.x += dx;
                 bounced = true;
                 arduboy.audio.tone(1, 261, 250);
               }
@@ -223,7 +227,7 @@ void moveBall()
   else
   {
     //Ball follows paddle
-    xb=xPaddle + 5;
+    ball.x=xPaddle + 5;
 
     //Release ball if FIRE pressed
     pad3 = arduboy.pressed(B_BUTTON);
@@ -249,10 +253,10 @@ void moveBall()
 
 void drawBall()
 {
-  arduboy.drawPixel(xb,   yb,   0);
-  arduboy.drawPixel(xb+1, yb,   0);
-  arduboy.drawPixel(xb,   yb+1, 0);
-  arduboy.drawPixel(xb+1, yb+1, 0);
+  arduboy.drawPixel(ball.x,   ball.y,   0);
+  arduboy.drawPixel(ball.x+1, ball.y,   0);
+  arduboy.drawPixel(ball.x,   ball.y+1, 0);
+  arduboy.drawPixel(ball.x+1, ball.y+1, 0);
 
   if(ballclock>4)
   {
@@ -262,10 +266,10 @@ void drawBall()
 
   ballclock++;
 
-  arduboy.drawPixel(xb,   yb,   1);
-  arduboy.drawPixel(xb+1, yb,   1);
-  arduboy.drawPixel(xb,   yb+1, 1);
-  arduboy.drawPixel(xb+1, yb+1, 1);
+  arduboy.drawPixel(ball.x,   ball.y,   1);
+  arduboy.drawPixel(ball.x+1, ball.y,   1);
+  arduboy.drawPixel(ball.x,   ball.y+1, 1);
+  arduboy.drawPixel(ball.x+1, ball.y+1, 1);
 }
 
 void drawPaddle()
@@ -284,10 +288,10 @@ void drawLives()
 
 void drawGameOver()
 {
-  arduboy.drawPixel(xb,   yb,   0);
-  arduboy.drawPixel(xb+1, yb,   0);
-  arduboy.drawPixel(xb,   yb+1, 0);
-  arduboy.drawPixel(xb+1, yb+1, 0);
+  arduboy.drawPixel(ball.x,   ball.y,   0);
+  arduboy.drawPixel(ball.x+1, ball.y,   0);
+  arduboy.drawPixel(ball.x,   ball.y+1, 0);
+  arduboy.drawPixel(ball.x+1, ball.y+1, 0);
   arduboy.setCursor(52, 42);
   arduboy.print( "Game");
   arduboy.setCursor(52, 54);
@@ -331,14 +335,14 @@ void newLevel(){
   arduboy.drawRect(xPaddle, 63, 11, 1, 0);
 
   //Undraw ball
-  arduboy.drawPixel(xb,   yb,   0);
-  arduboy.drawPixel(xb+1, yb,   0);
-  arduboy.drawPixel(xb,   yb+1, 0);
-  arduboy.drawPixel(xb+1, yb+1, 0);
+  arduboy.drawPixel(ball.x,   ball.y,   0);
+  arduboy.drawPixel(ball.x+1, ball.y,   0);
+  arduboy.drawPixel(ball.x,   ball.y+1, 0);
+  arduboy.drawPixel(ball.x+1, ball.y+1, 0);
 
   //Alter various variables to reset the game
   xPaddle = 54;
-  yb = 60;
+  ball.y = 60;
   brickCount = 0;
   released = false;
 
