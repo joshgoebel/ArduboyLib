@@ -701,17 +701,14 @@ void Arduboy::setTextWrap(boolean w)
 
 size_t Arduboy::write(uint8_t c)
 {
-  if (c == '\n')
-  {
+  if (c == '\r') //skip line feeds
+    return 0;
+
+  if (c == '\n') {
     cursor_y += textsize*8;
     cursor_x = 0;
   }
-  else if (c == '\r')
-  {
-    // skip em
-  }
-  else
-  {
+  else {
     drawChar(cursor_x, cursor_y, c, 1, 0, textsize);
     cursor_x += textsize*6;
     if (wrap && (cursor_x > (WIDTH - textsize*6)))
