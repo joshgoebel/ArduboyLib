@@ -94,8 +94,10 @@ public:
 
   /* drawing functions that take physics objects */
 
+
   void drawPixel(Point point);
   void drawLine(Point p1, Point p2);
+  void erase(Rect rect);
   void drawRect(Rect rect);
   void fillRect(Rect rect);
   void drawRoundRect(Rect rect, int16_t radius);

@@ -649,6 +649,11 @@ void Arduboy::drawRect(Rect rect)
   drawRect(rect.x, rect.y, rect.width, rect.height, drawColor);
 }
 
+void Arduboy::erase(Rect rect)
+{
+  drawRect(rect.x, rect.y, rect.width, rect.height, BLACK);
+}
+
 void Arduboy::fillRect(Rect rect)
 {
   fillRect(rect.x, rect.y, rect.width, rect.height, drawColor);

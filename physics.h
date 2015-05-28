@@ -12,6 +12,7 @@
 
 struct Rect
 {
+public:
     int x;
     int y;
     int width;
@@ -20,6 +21,7 @@ struct Rect
 
 struct Point
 {
+public:
     int x;
     int y;
 };
