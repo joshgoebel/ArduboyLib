@@ -1,6 +1,8 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
+#include <Arduino.h>
+
 // left edge is 1 pixel left offscreen
 #define LEFT_EDGE (Rect){ -1, 0, 1, 64}
 // right edit is 1 pixel right offscreen
@@ -15,8 +17,8 @@ struct Rect
 public:
     int x;
     int y;
-    int width;
-    int height;
+    uint8_t width;
+    uint8_t height;
 };
 
 struct Point
