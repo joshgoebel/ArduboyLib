@@ -54,12 +54,7 @@ class Arduboy : public Print
 {
 public:
   Arduboy();
-  void LCDDataMode();
-  void LCDCommandMode();
 
-  uint8_t getInput();
-  boolean pressed(uint8_t buttons);
-  boolean not_pressed(uint8_t buttons);
   void start();
   void idle();
   void blank();
@@ -68,7 +63,6 @@ public:
   void drawScreen(const unsigned char *image);
   void drawScreen(unsigned char image[]);
   void drawPixel(int x, int y, uint8_t color);
-  uint8_t getPixel(uint8_t x, uint8_t y);
   void drawCircle(int16_t x0, int16_t y0, int16_t r, uint8_t color);
   void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uint8_t color);
   void fillCircle(int16_t x0, int16_t y0, int16_t r, uint8_t color);
@@ -83,17 +77,20 @@ public:
   void fillRoundRect(int16_t x, int16_t y, int16_t w, int16_t h, int16_t r, uint8_t color);
   void drawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color);
   void fillTriangle (int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint8_t color);
+
   void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint8_t color);
   void drawSlowXYBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint8_t color);
   void drawChar(int16_t x, int16_t y, unsigned char c, uint8_t color, uint8_t bg, uint8_t size);
 
-  /* drawing setup functoins */
+
+  /* drawing setup functions */
 
   void setCursor(int16_t x, int16_t y);
   void setTextSize(uint8_t s);
   void setTextWrap(boolean w);
   void setColor(uint8_t color);
   void setColor(uint8_t color, uint8_t background);
+
 
   /* drawing functions that take physics objects */
 
@@ -104,9 +101,26 @@ public:
   void drawRoundRect(Rect rect, int16_t radius);
   void fillRoundRect(Rect rect, int16_t radius);
 
+
+  /* query methods */
+
+  uint8_t getPixel(uint8_t x, uint8_t y);
   inline unsigned char* getBuffer();
   uint8_t width();
   uint8_t height();
+
+
+  /* buttons */
+
+  uint8_t getInput();
+  boolean pressed(uint8_t buttons);
+  boolean not_pressed(uint8_t buttons);
+
+
+  /* utils */
+
+  void LCDDataMode();
+  void LCDCommandMode();
   virtual size_t write(uint8_t);
   void swap(int16_t& a, int16_t& b);
 
