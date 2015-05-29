@@ -9,6 +9,8 @@
  version 2.1 of the License, or (at your option) any later version.
  */
 
+#define USE_TONE
+
 #include <SPI.h>
 #include "Arduboy.h"
 
