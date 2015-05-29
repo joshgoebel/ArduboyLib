@@ -103,10 +103,24 @@ void benchFillRoundRect()
 }
 
 void benchDrawCircle()
-{}
+{
+  int x = 0, y = 0;
+  for (byte x=0; x<128; x++)
+    for (byte y=0; y<64; y++) {
+      display.drawCircle(x, y, x%64, WHITE);
+      display.drawCircle(x, y, x%64, BLACK);
+    }
+}
 
 void benchFillCircle()
-{}
+{
+  int x = 0, y = 0;
+  for (byte x=0; x<128; x++)
+    for (byte y=0; y<64; y++) {
+      display.fillCircle(x, y, x%64, WHITE);
+      display.fillCircle(x, y, x%64, BLACK);
+    }
+}
 
 void benchDrawPixel()
 {
@@ -128,13 +142,14 @@ void bench(char *name, void (*func)(), int iters)
 {
   long before = micros();
   long after, diff;
+  long ops_per_second;
   (*func)();
   after = micros();
   diff = after - before;
-  ops_per_second = (1000000*iters)/diff
+  ops_per_second = ((long)1000000*iters)/diff;
   output.print(name);
   output.print(" ");
-  output.printNumber(ops_per_second);
+  output.print(ops_per_second, 10);
   output.println();
 }
 
@@ -144,8 +159,8 @@ void loop () {
   bench("fillTriangle", &benchFillTriangle, 0);
   bench("drawRect", &benchDrawRect, 128+128+64);
   bench("fillRect", &benchFillRect, 128+128+64);
-  bench("drawCircle", &benchDrawCircle, 0);
-  bench("fillCircle", &benchFillCircle, 0);
+  bench("drawCircle", &benchDrawCircle, 8192);
+  bench("fillCircle", &benchFillCircle, 8192);
   bench("drawRoundRect", &benchDrawRoundRect, 128+128+64);
   bench("fillRoundRect", &benchFillRoundRect, 128+128+64);
   bench("drawLine", &benchDrawLine, 128+128+64);
