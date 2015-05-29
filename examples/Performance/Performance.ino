@@ -124,7 +124,8 @@ void benchDrawPixel()
 
 void benchDrawBitmap()
 {
-  int x = -64, y=-64;
+  // start drawing half way offscreen
+  int x = -32, y=-16;
   int ox = 0, oy = 0;
   for (byte ox=0; ox<128; ox++) {
     for (byte oy=0; oy<64; oy++) {
@@ -134,7 +135,18 @@ void benchDrawBitmap()
 }
 
 void benchSlowDrawBitmap()
-{}
+{
+  // start drawing half way offscreen
+  int x = -32, y=-16;
+  int ox = 0, oy = 0;
+  for (byte ox=0; ox<128; ox++) {
+    for (byte oy=0; oy<64; oy++) {
+      // this won't render correctly, but we're not looking at it so
+      // we shouldn't care
+      display.drawSlowXYBitmap(ox, oy, megaman_bg,32,64,WHITE);
+    }
+  }
+}
 
 void benchPaint()
 {
@@ -176,7 +188,7 @@ void setup() {
   bench("drawFastHLine", &benchDrawFastHLine, 64);
   bench("drawFastVLine", &benchDrawFastVLine, 128);
   bench("drawBitmap", &benchDrawBitmap, 8192);
-  bench("drawSlowBitmap", &benchSlowDrawBitmap, 0);
+  bench("drawSlowBitmap", &benchSlowDrawBitmap, 8192);
   display.clearDisplay();
   bench("paint", &benchPaint, 256);
 }
