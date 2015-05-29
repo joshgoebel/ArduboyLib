@@ -39,6 +39,8 @@ void Arduboy::start()
   if (pressed(LEFT_BUTTON+UP_BUTTON))
     safeMode();
   #endif
+
+  audio.setup();
 }
 
 void Arduboy::bootLCD()

@@ -1,6 +1,8 @@
 #ifndef ArduboyAudio_h
 #define ArduboyAudio_h
 
+// #define USE_TONE
+
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <avr/pgmspace.h>
@@ -21,8 +23,9 @@ public:
 	void save_on_off();
 	bool enabled();
 	void tone(uint8_t channel, unsigned int frequency, unsigned long duration);
-private:
-	bool static audio_enabled;
+
+protected:
+	bool audio_enabled;
 };
 
 

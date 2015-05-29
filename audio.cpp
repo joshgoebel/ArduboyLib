@@ -60,10 +60,12 @@ void ArduboyAudio::setup() {
   tune_playing = false;
 }
 
-void ArduboyAudio::tone(uint8_t channel, unsigned int frequency, unsigned long duration)
+void ArduboyAudio::tone(uint8_t port, unsigned int frequency, unsigned long duration)
 {
-  // if (audio_enabled)
-    // ::tone(channel, frequency, duration);
+  #ifdef USE_TONE
+  if (audio_enabled)
+    ::tone(port, frequency, duration);
+  #endif
 }
 
 
@@ -271,6 +273,8 @@ void ArduboyTunes::soundOutput()
   if (doing_delay && delay_toggle_count) --delay_toggle_count;  // countdown for tune_delay()
 }
 
+
+#ifndef USE_TONE
 ISR(TIMER1_COMPA_vect) {  // TIMER 1
   *_tunes_timer1_pin_port ^= _tunes_timer1_pin_mask;  // toggle the pin
 }
@@ -279,4 +283,4 @@ ISR(TIMER3_COMPA_vect) {  // TIMER 3
   // and use it to time score waits, whether or not it is playing a note.
   ArduboyTunes::soundOutput();
 }
-
+#endif
