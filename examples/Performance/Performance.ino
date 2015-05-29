@@ -154,6 +154,8 @@ void bench(char *name, void (*func)(), int iters)
 }
 
 void loop () {
+  output = Printer(&display);
+
   bench("drawPixel", &benchDrawPixel, 8192* 2);
   bench("drawTriangle", &benchDrawTriangle, 0);
   bench("fillTriangle", &benchFillTriangle, 0);
