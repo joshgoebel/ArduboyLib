@@ -177,17 +177,9 @@ void setup() {
 void loop () {
   // scroll
   if (display.pressed(DOWN_BUTTON)) {
-    output.offset += 1;
+    output.offset = max(MAX_OFFSET, output.offset+1);
   } else if (display.pressed(UP_BUTTON)) {
-    output.offset -= 1;
-  }
-
-  // do not overscroll
-  if (output.offset > MAX_OFFSET) {
-    output.offset = MAX_OFFSET;
-  }
-  else if (output.offset < 0) {
-    output.offset = 0;
+    output.offset = min(0, output.offset-1);
   }
 
   display.clearDisplay();
