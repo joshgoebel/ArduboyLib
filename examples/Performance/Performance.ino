@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include "Arduboy.h"
 #include "performance.h"
+#include "graphics.h"
 
 
 Arduboy display;
@@ -122,7 +123,15 @@ void benchDrawPixel()
 }
 
 void benchDrawBitmap()
-{}
+{
+  int x = -64, y=-64;
+  int ox = 0, oy = 0;
+  for (byte ox=0; ox<128; ox++) {
+    for (byte oy=0; oy<64; oy++) {
+      display.drawBitmap(ox, oy, megaman_bg,32,64,WHITE);
+    }
+  }
+}
 
 void benchSlowDrawBitmap()
 {}
@@ -166,7 +175,7 @@ void setup() {
   bench("drawLine", &benchDrawLine, 128+128+64);
   bench("drawFastHLine", &benchDrawFastHLine, 64);
   bench("drawFastVLine", &benchDrawFastVLine, 128);
-  bench("drawBitmap", &benchDrawBitmap, 0);
+  bench("drawBitmap", &benchDrawBitmap, 8192);
   bench("drawSlowBitmap", &benchSlowDrawBitmap, 0);
   display.clearDisplay();
   bench("paint", &benchPaint, 256);
