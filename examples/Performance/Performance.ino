@@ -15,10 +15,6 @@ typedef struct benchResult {
 
 benchResult runs[16];
 
-void setup() {
-  display.start();
-}
-
 void benchDrawTriangle()
 {
 }
@@ -153,7 +149,9 @@ void bench(char *name, void (*func)(), int iters)
   output.println();
 }
 
-void loop () {
+void setup() {
+  display.start();
+
   output = Printer(&display);
 
   bench("drawPixel", &benchDrawPixel, 8192* 2);
@@ -171,5 +169,28 @@ void loop () {
   bench("paint", &benchPaint, 64);
   bench("drawBitmap", &benchDrawBitmap, 0);
   bench("drawSlowBitmap", &benchSlowDrawBitmap, 0);
+}
 
+
+
+void loop () {
+  // scroll
+  if (display.pressed(DOWN_BUTTON)) {
+    output.cursor_y += 1;
+  } else if (display.pressed(UP_BUTTON)) {
+    output.cursor_y -= 1;
+  }
+
+  // do not overscroll
+  if (output.cursor_y > MAX_OFFSET) {
+    output.cursor_y = MAX_OFFSET;
+  }
+  else if (output.cursor_y < 0) {
+    output.cursor_y = 0;
+  }
+
+  display.clearDisplay();
+  output.paint();
+
+  delay(50);
 }
