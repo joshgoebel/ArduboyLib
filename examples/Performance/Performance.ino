@@ -23,12 +23,6 @@ void benchFillTriangle()
 {
 }
 
-void benchPaint()
-{
- for (byte i=0; i<64; i++)
-  display.display();
-}
-
 void benchDrawLine()
 {
   int x = 0, y = 0;
@@ -133,6 +127,12 @@ void benchDrawBitmap()
 void benchSlowDrawBitmap()
 {}
 
+void benchPaint()
+{
+ for (byte i=0; i<256; i++)
+  display.display();
+}
+
 
 void bench(char *name, void (*func)(), int iters)
 {
@@ -166,9 +166,10 @@ void setup() {
   bench("drawLine", &benchDrawLine, 128+128+64);
   bench("drawFastHLine", &benchDrawFastHLine, 64);
   bench("drawFastVLine", &benchDrawFastVLine, 128);
-  bench("paint", &benchPaint, 64);
   bench("drawBitmap", &benchDrawBitmap, 0);
   bench("drawSlowBitmap", &benchSlowDrawBitmap, 0);
+  display.clearDisplay();
+  bench("paint", &benchPaint, 256);
 }
 
 
@@ -176,17 +177,17 @@ void setup() {
 void loop () {
   // scroll
   if (display.pressed(DOWN_BUTTON)) {
-    output.cursor_y += 1;
+    output.offset += 1;
   } else if (display.pressed(UP_BUTTON)) {
-    output.cursor_y -= 1;
+    output.offset -= 1;
   }
 
   // do not overscroll
-  if (output.cursor_y > MAX_OFFSET) {
-    output.cursor_y = MAX_OFFSET;
+  if (output.offset > MAX_OFFSET) {
+    output.offset = MAX_OFFSET;
   }
-  else if (output.cursor_y < 0) {
-    output.cursor_y = 0;
+  else if (output.offset < 0) {
+    output.offset = 0;
   }
 
   display.clearDisplay();

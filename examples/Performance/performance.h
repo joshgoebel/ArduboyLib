@@ -27,7 +27,16 @@ Printer::Printer(Arduboy *boy)
 
 void Printer::paint()
 {
-
+	int calc_x, calc_y;
+	for (byte y=0; y<20; y++) {
+		calc_y = y*8 - offset;
+		if (calc_y<-7) // offscreen
+			continue;
+		for (byte x=0; x<16; x++) {
+			char c = buffer[y*16+x];
+			arduboy->drawChar(x*8, calc_y, c, WHITE, WHITE, 1);
+		}
+	}
 }
 
 size_t Printer::write(uint8_t c)
