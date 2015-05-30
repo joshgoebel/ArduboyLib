@@ -26,7 +26,7 @@ public:
 	void tone(uint8_t channel, unsigned int frequency, unsigned long duration);
 
 protected:
-	bool audio_enabled;
+	bool audio_enabled = false;
 };
 
 
