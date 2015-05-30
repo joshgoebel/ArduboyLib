@@ -51,8 +51,6 @@ byte rightBrick;
 byte topBrick;
 byte bottomBrick;
 
-int ballclock = 0;
-
 #include "pins_arduino.h" // Arduino pre-1.0 needs this
 
 void intro()
@@ -246,13 +244,7 @@ void drawBall()
   arduboy.drawPixel(xb,   yb+1, 0);
   arduboy.drawPixel(xb+1, yb+1, 0);
 
-  if(ballclock>4)
-  {
-    moveBall();
-    ballclock=0;
-  }
-
-  ballclock++;
+  moveBall();
 
   arduboy.drawPixel(xb,   yb,   1);
   arduboy.drawPixel(xb+1, yb,   1);
