@@ -193,6 +193,8 @@ bool Arduboy::nextFrame()
   }
 
   // pre-render
+  previousButtonState = currentButtonState;
+  currentButtonState = getInput();
 
   // technically next frame should be last frame + each frame but if we're
   // running a slow render we would constnatly be behind the clock
@@ -827,8 +829,33 @@ uint8_t Arduboy::height() { return HEIGHT; }
 //   if (pressed(LEFT_BUTTON + A_BUTTON))
 boolean Arduboy::pressed(uint8_t buttons)
 {
- uint8_t button_state = getInput();
- return (button_state & buttons) == buttons;
+ // LEGACY: handle apps not using frames
+ if (frameCount == 0)
+   currentButtonState = getInput();
+
+ return (currentButtonState & buttons) == buttons;
+}
+
+// returns true if a button that has been held down was just released
+// this function only reliably works with a single button. You should not
+// pass it multiple buttons as you can with some of the other button
+// functions.
+//
+// This can be used for confirmations or other times when you want to take
+// an action AFTER the user finishes the pressing rather than immediately
+// when the button goes down.  Not that there is any good way for someone
+// to change their mind, but the experience can feel very different.
+boolean Arduboy::justReleased(uint8_t button)
+{
+ return ((previousButtonState & button) && !(currentButtonState & button));
+}
+
+// returns true if a button has just been pressed
+// if the button has been held down for multiple frames this will return
+// false.  You should only use this to poll a single button.
+boolean Arduboy::justPressed(uint8_t button)
+{
+ return (!(previousButtonState & button) && (currentButtonState & button));
 }
 
 // returns true if the button mask passed in not pressed
@@ -836,8 +863,10 @@ boolean Arduboy::pressed(uint8_t buttons)
 //   if (not_pressed(LEFT_BUTTON))
 boolean Arduboy::not_pressed(uint8_t buttons)
 {
- uint8_t button_state = getInput();
- return (button_state & buttons) == 0;
+  // LEGACY: handle apps not using frames
+  if (frameCount == 0)
+    currentButtonState = getInput();
+  return (currentButtonState & buttons) == 0;
 }
 
 

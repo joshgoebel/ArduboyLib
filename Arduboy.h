@@ -68,6 +68,8 @@ public:
   uint8_t getInput();
   boolean pressed(uint8_t buttons);
   boolean not_pressed(uint8_t buttons);
+  boolean justReleased(uint8_t button);
+  boolean justPressed(uint8_t button);
   void start();
   void saveMuchPower();
   void idle();
@@ -118,6 +120,9 @@ public:
   long nextFrameStart = 0;
   bool post_render = false;
   uint8_t lastFrameDurationMs = 0;
+
+  uint8_t currentButtonState = 0;
+  uint8_t previousButtonState = 0;
 
 private:
   unsigned char sBuffer[(HEIGHT*WIDTH)/8];
