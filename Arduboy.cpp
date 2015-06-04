@@ -81,17 +81,17 @@ void Arduboy::slowCPU()
 
 void Arduboy::logoIntro()
 {
-  for(int y=-16; y++; y<64) {
+  for(int y=-16; y<22; y++) {
     clearDisplay();
     drawBitmap(20,y,logo,88,16, WHITE);
     display();
-    delay(50);
+    delay(20);
   }
   delay(200);
-  // tunes.tone(987, 160);
+  tunes.tone(987, 160);
   delay(160);
-  // tunes.tone(1318, 400);
-  delay(2000);
+  tunes.tone(1318, 400);
+  delay(1000);
 }
 
 void Arduboy::bootLCD()
