@@ -66,6 +66,7 @@ public:
   void LCDCommandMode();
 
   uint8_t getInput();
+  void pollButtons();
   boolean pressed(uint8_t buttons);
   boolean not_pressed(uint8_t buttons);
   boolean justReleased(uint8_t button);
