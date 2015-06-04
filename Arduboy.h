@@ -3,6 +3,7 @@
 
 #include <SPI.h>
 #include <Print.h>
+#include <EEPROM.h>
 #include <avr/sleep.h>
 #include <avr/power.h>
 #include <limits.h>
@@ -20,6 +21,7 @@
 
 #define PIXEL_SAFE_MODE
 #define SAFE_MODE
+#define INCLUDES_SHARED_SETUP
 
 #define CS 6
 #define DC 4
@@ -73,6 +75,8 @@ public:
   void start();
   void saveMuchPower();
   void idle();
+  void setBrightness(uint8_t brightness);
+  void editContrast() __attribute__((always_inline));
   void blank();
   void clearDisplay();
   void display();
@@ -125,6 +129,7 @@ public:
   uint8_t previousButtonState = 0;
 
 private:
+
   unsigned char sBuffer[(HEIGHT*WIDTH)/8];
 
   void bootLCD() __attribute__((always_inline));

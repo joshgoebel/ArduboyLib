@@ -44,7 +44,12 @@ void Arduboy::start()
   digitalWrite(RST, HIGH);  // bring out of reset
 
   bootLCD();
+  setBrightness(EEPROM.read(EEPROM_BRIGHTNESS));
 
+  #ifdef INCLUDES_SHARED_SETUP
+  if (pressed(A_BUTTON))
+    editContrast();
+  #endif
   #ifdef SAFE_MODE
   if (pressed(LEFT_BUTTON+UP_BUTTON))
     safeMode();
@@ -138,7 +143,6 @@ void Arduboy::LCDCommandMode()
   *dcport &= ~dcpinmask;
   *csport &= ~cspinmask;
 }
-
 
 /* Power Management */
 
@@ -245,14 +249,83 @@ uint16_t Arduboy::rawADC(byte adc_bits)
 
 /* Graphics */
 
+void Arduboy::setBrightness(uint8_t brightness)
+{
+  uint8_t real_brightness = brightness << 1 ;
+  // 0x02 of the high nibble always on or we have display glitches
+  uint8_t p1 = (brightness | 0b00100000) & 0xF0;
+  // kick low bit to 1 for extra brightness kick
+  uint8_t p2 = brightness >> 7;
+  LCDCommandMode();
+  SPI.transfer(0x81);  // Set Contrast v
+  SPI.transfer(real_brightness);
+  SPI.transfer(0xD9);  // Set Precharge
+  SPI.transfer(p1+p2);
+  LCDDataMode();
+}
+
+void Arduboy::editContrast()
+{
+  // return;
+  int level = EEPROM.read(EEPROM_BRIGHTNESS);
+
+
+  while(true)
+  {
+    clearDisplay();
+    setCursor(32, 0);
+    print("Brightness");
+    // setCursor(0,0);
+    // println(level);
+    // clearDisplay();
+    // fillRect(16, 45, 96, 10, BLACK);
+    // drawRect(16, 45, 96, 10, WHITE);
+    // for (uint8_t x=16; x<111; x++ )
+    //   drawPixel(x,45,WHITE);
+    for (uint8_t x=16; x<16+level*100/266; x++ )
+    //   for (uint8_t y=45; y<55; y++ )
+      drawPixel(x,50,WHITE);
+
+    // fillRect(16, 45, (int)level*100/266, 10, WHITE);
+    display();
+    if (level>0 && pressed(LEFT_BUTTON)) {
+      level -= 8;
+    } else if (level < 255 && pressed(RIGHT_BUTTON)) {
+      level += 8;
+    } else if (pressed(B_BUTTON)) {
+      EEPROM.write(EEPROM_BRIGHTNESS, level);
+      return;
+    }
+    level = max((min(255,level)),0);
+    setBrightness(level);
+    delay(5);
+  }
+
+}
+
 void Arduboy::blank()
 {
   for (int a = 0; a < (HEIGHT*WIDTH)/8; a++) SPI.transfer(0x00);
 }
 
+
+
 void Arduboy::clearDisplay()
 {
   for (int a = 0; a < (HEIGHT*WIDTH)/8; a++) sBuffer[a] = 0x00;
+  // vs
+  asm volatile(
+    "movw  r30, %0\n\t" // load sBuffer into Z
+    "loop:   \n\t"
+    "eor __tmp_reg__, __tmp_reg__ \n\t"
+    "st Z+, __zero_reg__ \n\t"
+    "st Z+, __zero_reg__ \n\t"
+    "st Z+, __zero_reg__ \n\t"
+    "st Z+, __zero_reg__ \n\t"
+    "inc __tmp_reg__ \n\t"
+    "breq loop \n\t"
+    : : "r" (sBuffer) : "r30","r31"
+    );
 }
 
 void Arduboy::drawPixel(int x, int y, uint8_t color)
@@ -312,6 +385,7 @@ void Arduboy::drawCircle(int16_t x0, int16_t y0, int16_t r, uint8_t color)
     drawPixel(x0 - x, y0 + y, color);
     drawPixel(x0 + x, y0 - y, color);
     drawPixel(x0 - x, y0 - y, color);
+
     drawPixel(x0 + y, y0 + x, color);
     drawPixel(x0 - y, y0 + x, color);
     drawPixel(x0 + y, y0 - x, color);
