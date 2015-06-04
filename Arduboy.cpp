@@ -1,5 +1,8 @@
 #include "Arduboy.h"
 #include "glcdfont.c"
+#ifdef SHOW_LOGO
+#include "assets.h"
+#endif
 
 Arduboy::Arduboy() { }
 
@@ -46,6 +49,11 @@ void Arduboy::start()
   bootLCD();
   setBrightness(EEPROM.read(EEPROM_BRIGHTNESS));
 
+  audio.setup();
+  #ifdef SHOW_LOGO
+  logoIntro();
+  #endif
+
   #ifdef INCLUDES_SHARED_SETUP
   if (pressed(A_BUTTON))
     editContrast();
@@ -55,7 +63,6 @@ void Arduboy::start()
     safeMode();
   #endif
 
-  audio.setup();
   saveMuchPower();
 }
 
@@ -71,6 +78,21 @@ void Arduboy::slowCPU()
   SREG = oldSREG;       // restore interrupts
 }
 #endif
+
+void Arduboy::logoIntro()
+{
+  for(int y=-16; y++; y<64) {
+    clearDisplay();
+    drawBitmap(20,y,logo,88,16, WHITE);
+    display();
+    delay(50);
+  }
+  delay(200);
+  // tunes.tone(987, 160);
+  delay(160);
+  // tunes.tone(1318, 400);
+  delay(2000);
+}
 
 void Arduboy::bootLCD()
 {

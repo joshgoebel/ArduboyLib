@@ -21,6 +21,7 @@
 
 #define PIXEL_SAFE_MODE
 #define SAFE_MODE
+#define SHOW_LOGO
 #define INCLUDES_SHARED_SETUP
 
 #define CS 6
@@ -73,6 +74,7 @@ public:
   boolean justReleased(uint8_t button);
   boolean justPressed(uint8_t button);
   void start();
+  void logoIntro();
   void saveMuchPower();
   void idle();
   void setBrightness(uint8_t brightness);
