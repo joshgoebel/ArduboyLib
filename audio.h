@@ -35,6 +35,7 @@ public:
 
   /// Assign a timer to an output pin.
   void initChannel(byte pin);
+  void boot();
 
   /// Start playing a polyphonic score.
   void playScore(const byte *score);

@@ -18,6 +18,7 @@ volatile boolean tonePlaying = false;
 volatile unsigned long wait_toggle_count;      /* countdown score waits */
 volatile unsigned long delay_toggle_count;     /* countdown tune_ delay() delays */
 
+void (*timer_3_handler)();
 
 // pointers to your musical score and your position in said score
 volatile const byte *score_start = 0;
@@ -75,6 +76,12 @@ void ArduboyAudio::tone(uint8_t channel, unsigned int frequency, unsigned long d
 
 
 /* TUNES */
+
+void ArduboyTunes::boot() {
+  initChannel(PIN_SPEAKER_1);
+  initChannel(PIN_SPEAKER_2);
+  timer_3_handler = *soundOutput;
+}
 
 void ArduboyTunes::initChannel(byte pin) {
   byte timer_num;
@@ -327,6 +334,8 @@ ISR(TIMER1_COMPA_vect) {  // TIMER 1
 ISR(TIMER3_COMPA_vect) {  // TIMER 3
   // Timer 3 is the one assigned first, so we keep it running always
   // and use it to time score waits, whether or not it is playing a note.
-  ArduboyTunes::soundOutput();
+  // ArduboyTunes::soundOutput();
+  if(timer_3_handler != NULL)
+    timer_3_handler();
 }
 

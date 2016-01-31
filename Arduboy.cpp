@@ -21,8 +21,7 @@ void Arduboy::start()
   boot(); // required
 
   // Audio
-  tunes.initChannel(PIN_SPEAKER_1);
-  tunes.initChannel(PIN_SPEAKER_2);
+  // tunes.boot();
   audio.setup();
 }
 
