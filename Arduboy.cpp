@@ -38,6 +38,18 @@ void Arduboy::begin()
 
 void Arduboy::bootLogo()
 {
+
+  for(int8_t y = -17; y<24; y++) {
+    clearDisplay();
+    drawBitmap(20,y, arduboy_logo, 88, 16, WHITE);
+    display();
+    delay(20);
+  }
+
+  while(true);
+  return;
+
+
   const unsigned char *logo = arduboy_logo;
   uint8_t pos;
   // // lets get it on the screen
