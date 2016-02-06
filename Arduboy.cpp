@@ -1,5 +1,6 @@
 #include "Arduboy.h"
 #include "glcdfont.c"
+#include "ab_logo.h"
 
 Arduboy::Arduboy()
 {
@@ -27,10 +28,123 @@ void Arduboy::begin()
 {
   boot(); // required
 
+  bootLogo();
+
   // Audio
   tunes.initChannel(PIN_SPEAKER_1);
   tunes.initChannel(PIN_SPEAKER_2);
   audio.begin();
+}
+
+void Arduboy::bootLogo()
+{
+  const unsigned char *logo = arduboy_logo;
+  uint8_t pos;
+  // // lets get it on the screen
+  uint16_t c = 0;
+  uint8_t seed = 0;
+  uint8_t row, bit, pixel, x ,y;
+  uint8_t flipper = 0;
+  while (c < 16*256) {
+    // randomize
+    if (seed == 0) {
+      seed = 0x1d;
+    } else if (seed == 0x80) {
+      seed = 0;
+    } else {
+      bit = seed & 0x80;
+      seed <<= 1;
+      if (bit) {
+        seed = seed ^ 0x1d;
+      }
+    }
+
+    if (seed >= 88) {
+      c++;
+      // flipper++;
+      // seed <<= 2;
+      continue;
+    }
+
+    if (seed==0) {
+      flipper += 1;
+    }
+
+    if (c>3000) {
+      delay(0);
+    } else {
+      delay(1);
+    }
+
+    // setCursor(0,32);
+    // print(seed);
+    // print("  ");
+
+
+    x = seed;
+    bit = flipper & 0x07;
+    row = flipper & 0x08 ? 1 : 0;
+    pixel = pgm_read_byte(logo + x + (row * 88)) & ( 1 << bit);
+    drawPixel(x + 20, (row * 8) + bit, pixel);
+    c++;
+    flipper++;
+    if (flipper==16) {
+      flipper=0;
+    }
+    display();
+  }
+  // while (mem_position < 60 + 88*2) {
+  //   sBuffer[mem_position++] = pgm_read_byte(logo);
+  //   logo++;
+  //   if(mem_position==108) {
+  //     mem_position+=40;
+  //   }
+  // }
+
+  // drawSlowXYBitmap(0,0, arduboy_logo, 88, 16, WHITE);
+
+  // setTextSize(4);
+  // setCursor(0,0);
+  // print("Music\nDemo");
+
+
+
+    // sendLCDCommand(0xa8);
+  // sendLCDCommand(64-16);
+
+  // sendLCDCommand(0x50);
+  // delay(2000);
+
+  // sendLCDCommand(0x29);
+  // sendLCDCommand(0x0); // padding
+  // sendLCDCommand(0x0); // start page
+  // sendLCDCommand(0x0); // interval
+  // sendLCDCommand(0x7); // end page
+  // sendLCDCommand(0x1); // vertical offset
+  // sendLCDCommand(0x2f); // vertical offset
+
+  // for (uint8_t y = 63; y>= 1; y--) {
+    // sendLCDCommand(0xd3);
+    // sendLCDCommand(y);
+    // if (y>14) {
+    // sendLCDCommand(0xa8);
+    // sendLCDCommand(63-y); 
+  // }
+    // delay(20);
+
+    // delay(50);
+  // }
+
+
+
+  // for (uint8_t y = 0x7f; y> 0x40; y--) {
+    // sendLCDCommand(0xd3);
+    // sendLCDCommand(y);
+    // delay(20);
+  // }
+
+  while(true);
+  // delay(5000);
 }
 
 /* Frame management */

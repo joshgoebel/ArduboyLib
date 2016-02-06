@@ -45,6 +45,9 @@ public:
   void begin();
   void start() __attribute__ ((deprecated("use begin() instead")));
 
+  /// Scrolls in the Arduboy logo
+  void bootLogo();
+
   /// Clears display.
   void clear();
   void clearDisplay() __attribute__ ((deprecated("use clear() instead")));

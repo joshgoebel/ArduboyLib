@@ -162,6 +162,9 @@ void setup()
 {
   arduboy.begin();
   arduboy.setTextSize(4);
+  display.setCursor(0,0);
+  display.print("Music\nDemo");
+  display.display();
 }
 
 
