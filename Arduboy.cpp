@@ -38,36 +38,73 @@ void Arduboy::begin()
 
 void Arduboy::bootLogo()
 {
-  uint8_t pixel;
-
-  for(int8_t y = -17; y<24; y++) {
-    clearDisplay();
-    for(uint8_t xi = 0; xi < 88; xi++ ) {
-      for(uint8_t yi = 0; yi < 16; yi++) {
-        pixel = pgm_read_byte(arduboy_logo + xi + (yi / 8)*88) & (1 << (yi & 7));
-        drawPixel(20 + xi, y + yi, pixel);
-      }
+  const unsigned char *logo = arduboy_logo;
+  uint16_t mem_position = 20+128*5;
+  uint8_t c=0;
+ 
+  while (c < 88*2) {
+    sBuffer[mem_position++] = pgm_read_byte(logo);
+    logo++;
+    c++;
+    if(c==88) {
+      mem_position+=128-88;
     }
+  }
+  display();
 
-    // drawBitmap(20,y, arduboy_logo, 88, 16, WHITE);
-    display();
-    delay(25);
+  // drawSlowXYBitmap(0,0, arduboy_logo, 88, 16, WHITE);
+
+  // setTextSize(4);
+  // setCursor(0,0);
+  // print("Music\nDemo");
+
+
+  // sendLCDCommand(0xc0);
+
+  invert(true);
+
+
+  sendLCDCommand(0xa8);
+  sendLCDCommand(63-24);
+
+  sendLCDCommand(0xd3);
+  sendLCDCommand(24);
+
+  delay(500);
+
+  // sendLCDCommand(0x50);
+  // delay(2000);
+
+  // sendLCDCommand(0x29);
+  // sendLCDCommand(0x0); // padding
+  // sendLCDCommand(0x0); // start page
+  // sendLCDCommand(0x0); // interval
+  // sendLCDCommand(0x7); // end page
+  // sendLCDCommand(0x1); // vertical offset
+  // sendLCDCommand(0x2f); // vertical offset
+
+  // for (uint8_t y = 63; y>= 1; y--) {
+    // sendLCDCommand(0xd3);
+    // sendLCDCommand(y);
+    // if (y>14) {
+    // sendLCDCommand(0xa8);
+    // sendLCDCommand(63-y); 
+  // }
+    // delay(20);
+
+    // delay(50);
+  // }
+
+
+
+  for (uint8_t y = 0x7f; y> 0x40+16; y--) {
+    // sendLCDCommand(0xd3);
+    sendLCDCommand(y);
+    delay(50);
   }
 
-  pinMode(PIN_SPEAKER_1, OUTPUT);
-  volatile byte *spkr  = PIN_SPEAKER_1_PORT;
-  for (int16_t i = 0; i<200; i++) {
-     *spkr ^= PIN_SPEAKER_1_BITMASK;
-    delayMicroseconds(1500 + i*2);
-  }
-  for (int16_t i = 0; i<350; i++) {
-     *spkr ^= PIN_SPEAKER_1_BITMASK;
-    delayMicroseconds(1500 - i*4);
-  }
-  // speaker off
-  *spkr &= ~PIN_SPEAKER_1_BITMASK;
-
-  delay(750);
+  while(true);
+  // delay(5000);
 }
 
 /* Frame management */
