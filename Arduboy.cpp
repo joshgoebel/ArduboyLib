@@ -38,9 +38,18 @@ void Arduboy::begin()
 
 void Arduboy::bootLogo()
 {
+  uint8_t pixel;
+
   for(int8_t y = -17; y<24; y++) {
     clearDisplay();
-    drawBitmap(20,y, arduboy_logo, 88, 16, WHITE);
+    for(uint8_t xi = 0; xi < 88; xi++ ) {
+      for(uint8_t yi = 0; yi < 16; yi++) {
+        pixel = pgm_read_byte(arduboy_logo + xi + (yi / 8)*88) & (1 << (yi & 7));
+        drawPixel(20 + xi, y + yi, pixel);
+      }
+    }
+
+    // drawBitmap(20,y, arduboy_logo, 88, 16, WHITE);
     display();
     delay(25);
   }
