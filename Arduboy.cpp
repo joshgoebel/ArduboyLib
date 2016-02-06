@@ -1,4 +1,4 @@
-#include "Arduboy.h"
+  #include "Arduboy.h"
 #include "glcdfont.c"
 #include "ab_logo.h"
 
@@ -42,26 +42,22 @@ void Arduboy::bootLogo()
   uint16_t mem_position = 20+128*5;
   uint8_t c=0;
  
-  while (c < 88*2) {
-    sBuffer[mem_position++] = pgm_read_byte(logo);
-    logo++;
-    c++;
-    if(c==88) {
-      mem_position+=128-88;
+  // mem_position = 20+128*5;
+  // logo = arduboy_logo;
+  c = 0;
+    while (c < 88*2) {
+      sBuffer[mem_position++] = pgm_read_byte(logo);
+      logo++;
+      c++;
+      if(c==88) {
+        mem_position+=128-88;
+      }
     }
-  }
-  display();
-
-  // drawSlowXYBitmap(0,0, arduboy_logo, 88, 16, WHITE);
-
-  // setTextSize(4);
-  // setCursor(0,0);
-  // print("Music\nDemo");
-
+    display();
 
   // sendLCDCommand(0xc0);
 
-  invert(true);
+  // invert(true);
 
 
   sendLCDCommand(0xa8);
@@ -70,41 +66,72 @@ void Arduboy::bootLogo()
   sendLCDCommand(0xd3);
   sendLCDCommand(24);
 
-  delay(500);
+  sendLCDCommand(0xD5);  
+  // sendLCDCommand(0b11110000);  
+  sendLCDCommand(0b11110000);  
 
-  // sendLCDCommand(0x50);
-  // delay(2000);
+  // delay(200);
+  boolean changed=false;
 
-  // sendLCDCommand(0x29);
-  // sendLCDCommand(0x0); // padding
-  // sendLCDCommand(0x0); // start page
-  // sendLCDCommand(0x0); // interval
-  // sendLCDCommand(0x7); // end page
-  // sendLCDCommand(0x1); // vertical offset
-  // sendLCDCommand(0x2f); // vertical offset
+  // for (uint16_t d=55000; d>25000; d-=250)
+  uint16_t d=30;
+  while(true)
+  {
+    if (pressed(LEFT_BUTTON)) {
+      d-=1;
+      changed=true;
+    }
+    if (pressed(RIGHT_BUTTON)) {
+      d+=1;
+      changed=true;
+    }
+    if (changed) {
+    setTextSize(1);
+    setCursor(0,40);
+    print(d);
+    display();
+    }
 
-  // for (uint8_t y = 63; y>= 1; y--) {
-    // sendLCDCommand(0xd3);
-    // sendLCDCommand(y);
-    // if (y>14) {
-    // sendLCDCommand(0xa8);
-    // sendLCDCommand(63-y); 
-  // }
-    // delay(20);
+    for (uint8_t y = 0x7f; y> 0x40+16; y--) {
+      // sendLCDCommand(0xd3);
+      // clearDisplay();
+      // display();
+      
+      sendLCDCommand(y);
+      sendLCDCommand(y);
+      // delay(7);
+      // delay(5);
+      // display();
+      // delayMicroseconds(d);
+      delay(d);
+      // delayMicroseconds(d%1000);
+      // delay(33);
+      // delayMicroseconds(d);
+    }
+    // delay(1500);
+      pinMode(PIN_SPEAKER_1, OUTPUT);
+      volatile byte *spkr  = PIN_SPEAKER_1_PORT;
 
-    // delay(50);
-  // }
+      // for (int16_t t = 0; t < 10000; t++) {
+      // uint8_t pcm = t * ((t>>12|t>>8)&63&t>>4);
+      // uint8_t softpwm = 0;
+      // do {
+      //     *spkr = *spkr & (~PIN_SPEAKER_1_BITMASK) | (softpwm < pcm) ? PIN_SPEAKER_1_BITMASK : 0;
+      // } while(++softpwm != 0);
 
-
-
-  for (uint8_t y = 0x7f; y> 0x40+16; y--) {
-    // sendLCDCommand(0xd3);
-    sendLCDCommand(y);
-    delay(50);
+// i = 0; i<200; i++) 
+      //    *spkr ^= PIN_SPEAKER_1_BITMASK;
+      
+      // }
+         // delayMicroseconds(1500-i);
+        // delayMQSSSicroseconds(- i^2 -i^4);
+         // delayMicroseconds(1000 - abs((i % 500) - 250));
+      // }
+      // speaker off
+      *spkr &= ~PIN_SPEAKER_1_BITMASK;
   }
 
   while(true);
-  // delay(5000);
 }
 
 /* Frame management */
@@ -781,3 +808,4 @@ void Arduboy::swap(int16_t& a, int16_t& b)
   a = b;
   b = temp;
 }
+  

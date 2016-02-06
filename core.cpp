@@ -147,7 +147,7 @@ void ArduboyCore::bootLCD()
   dcport = portOutputRegister(digitalPinToPort(DC));
   dcpinmask = digitalPinToBitMask(DC);
 
-  SPI.setClockDivider(SPI_CLOCK_DIV2);
+  // SPI.setClockDivider(SPI_CLOCK_DIV2);
 
   LCDCommandMode();
   // run our customized boot-up command sequence against the
@@ -229,17 +229,17 @@ void ArduboyCore::paintScreen(unsigned char image[])
 {
   for (int i = 0; i < (HEIGHT*WIDTH)/8; i++)
   {
-    // SPI.transfer(image[i]);
+    SPI.transfer(image[i]);
 
     // we need to burn 18 cycles between sets of SPDR
     // 4 clock cycles
-    SPDR = image[i];
+    // SPDR = image[i];
     // 7 clock cycles
-    asm volatile(
-      "mul __zero_reg__, __zero_reg__ \n" // 2 cycles
-      "mul __zero_reg__, __zero_reg__ \n" // 2 cycles
-      "mul __zero_reg__, __zero_reg__ \n" // 2 cycles
-      );
+    // asm volatile(
+    //   "mul __zero_reg__, __zero_reg__ \n" // 2 cycles
+    //   "mul __zero_reg__, __zero_reg__ \n" // 2 cycles
+    //   "mul __zero_reg__, __zero_reg__ \n" // 2 cycles
+    //   );
   }
 }
 
