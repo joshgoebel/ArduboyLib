@@ -81,9 +81,9 @@ void Arduboy::bootLogo()
   boolean changed=false;
 
   // for (uint16_t d=55000; d>25000; d-=250)
-  long d=35000;
-  long last;
-  while(true)
+  // long d=35000;
+  // long last;
+  // while(true)
   {
 
     // if (changed) {
@@ -93,24 +93,24 @@ void Arduboy::bootLogo()
     // display();
     // }
 
-    last=micros();
+    // last=micros();
     for (uint8_t y = 0x7f; y> 0x40+16; y--) {
 
 
-      while((micros()-last) < d) {
+      // while((micros()-last) < d) {
 
-        if (micros()/10%10==1) {
-          if (pressed(LEFT_BUTTON)) {
-            d-=3;
-            changed=true;
-          }
-          if (pressed(RIGHT_BUTTON)) {
-            d+=3;
-            changed=true;
-          }
-        }
-      }
-      last=micros();
+      //   if (micros()/10%10==1) {
+      //     if (pressed(LEFT_BUTTON)) {
+      //       d-=3;
+      //       changed=true;
+      //     }
+      //     if (pressed(RIGHT_BUTTON)) {
+      //       d+=3;
+      //       changed=true;
+      //     }
+      //   }
+      // }
+      // last=micros();
 
 
       // sendLCDCommand(0xd3);
@@ -142,10 +142,20 @@ void Arduboy::bootLogo()
       // delayMicroseconds(d);
       // delayMicroseconds(d);
       // delayMicroseconds(d%1000);
-      // delay(33);
+      delay(25);
       // delayMicroseconds(d);
     }
     delay(1500);
+
+    sendLCDCommand(0xa8);
+    sendLCDCommand(0x3f);
+
+    sendLCDCommand(0xd3);
+    sendLCDCommand(0);
+
+    sendLCDCommand(0x7f);
+    clear();
+
       // pinMode(PIN_SPEAKER_1, OUTPUT);
       volatile byte *spkr  = PIN_SPEAKER_1_PORT;
 
@@ -168,7 +178,7 @@ void Arduboy::bootLogo()
       *spkr &= ~PIN_SPEAKER_1_BITMASK;
   }
 
-  while(true);
+  // while(true);
 }
 
 /* Frame management */
