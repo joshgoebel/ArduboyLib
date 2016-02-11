@@ -66,50 +66,87 @@ void Arduboy::bootLogo()
   sendLCDCommand(0xd3);
   sendLCDCommand(24);
 
-  sendLCDCommand(0xD5);  
+
+  // sendLCDCommand(0x81);
+  // sendLCDCommand(0x22);
+  // sendLCDCommand(0xD9);
+  // sendLCDCommand(0x22);
+
+
+  // sendLCDCommand(0xD5);  
   // sendLCDCommand(0b11110000);  
-  sendLCDCommand(0b11110000);  
+  // sendLCDCommand(0b11110000);  
 
   // delay(200);
   boolean changed=false;
 
   // for (uint16_t d=55000; d>25000; d-=250)
-  uint16_t d=30;
+  long d=35000;
+  long last;
   while(true)
   {
-    if (pressed(LEFT_BUTTON)) {
-      d-=1;
-      changed=true;
-    }
-    if (pressed(RIGHT_BUTTON)) {
-      d+=1;
-      changed=true;
-    }
-    if (changed) {
-    setTextSize(1);
-    setCursor(0,40);
-    print(d);
-    display();
-    }
 
+    // if (changed) {
+    // setTextSize(1);
+    // setCursor(0,40);
+    // print(d);
+    // display();
+    // }
+
+    last=micros();
     for (uint8_t y = 0x7f; y> 0x40+16; y--) {
+
+
+      while((micros()-last) < d) {
+
+        if (micros()/10%10==1) {
+          if (pressed(LEFT_BUTTON)) {
+            d-=3;
+            changed=true;
+          }
+          if (pressed(RIGHT_BUTTON)) {
+            d+=3;
+            changed=true;
+          }
+        }
+      }
+      last=micros();
+
+
       // sendLCDCommand(0xd3);
       // clearDisplay();
       // display();
+      // sendLCDCommand(0xa5);  
+  // sendLCDCommand(0b11110000);  
+      // sendLCDCommand(0xa7);  
+      // delay(2);
+      // sendLCDCommand(0xa4);  
+      // sendLCDCommand(0xa6);  
+
+
+    
+    
+      blank();
+      sendLCDCommand(y);
+      delay(5);
+      display();
+      // delay(2);
       
-      sendLCDCommand(y);
-      sendLCDCommand(y);
+
+
+      // sendLCDCommand(y);
       // delay(7);
       // delay(5);
       // display();
       // delayMicroseconds(d);
-      delay(d);
+      // delayMicroseconds(d);
+      // delayMicroseconds(d);
       // delayMicroseconds(d%1000);
       // delay(33);
       // delayMicroseconds(d);
     }
-    // delay(1500);
-      pinMode(PIN_SPEAKER_1, OUTPUT);
+    delay(1500);
+      // pinMode(PIN_SPEAKER_1, OUTPUT);
       volatile byte *spkr  = PIN_SPEAKER_1_PORT;
 
       // for (int16_t t = 0; t < 10000; t++) {
