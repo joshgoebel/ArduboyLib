@@ -23,57 +23,57 @@ const uint8_t PROGMEM lcdBootProgram[] = {
   // Further reading: https://www.adafruit.com/datasheets/SSD1306.pdf
   //
   // Display Off
-  // 0xAE,     
+  // 0xAE,
 
   // Set Display Clock Divisor v = 0xF0
   // default is 0x80
   0xD5, 0xF0,
 
   // Set Multiplex Ratio v = 0x3F
-  // 0xA8, 0x3F,   
+  // 0xA8, 0x3F,
 
   // Set Display Offset v = 0
-  // 0xD3, 0x00, 
+  // 0xD3, 0x00,
 
   // Set Start Line (0)
-  // 0x40,     
+  // 0x40,
 
   // Charge Pump Setting v = enable (0x14)
   // default is disabled
-  0x8D, 0x14,   
+  0x8D, 0x14,
 
   // Set Segment Re-map (A0) | (b0001)
   // default is (b0000)
-  0xA1,     
+  0xA1,
 
   // Set COM Output Scan Direction
-  0xC8,     
+  0xC8,
 
   // Set COM Pins v
-  // 0xDA, 0x12,   
+  // 0xDA, 0x12,
 
   // Set Contrast v = 0xCF
-  0x81, 0xCF,   
+  0x81, 0xCF,
 
   // Set Precharge = 0xF1
   0xD9, 0xF1,
-    
+
   // Set VCom Detect
-  // 0xDB, 0x40,   
+  // 0xDB, 0x40,
 
   // Entire Display ON
-  // 0xA4,     
+  // 0xA4,
 
   // Set normal/inverse display
-  // 0xA6,  
+  // 0xA6,
 
   // Display On
-  0xAF,     
+  0xAF,
 
   // set display mode = horizontal addressing mode (0x00)
-  0x20, 0x00,  
+  0x20, 0x00,
 
-  // set col address range 
+  // set col address range
   // 0x21, 0x00, COLUMN_ADDRESS_END,
 
   // set page address range
@@ -308,7 +308,7 @@ void ArduboyCore::setRGBled(uint8_t red, uint8_t green, uint8_t blue)
 uint8_t ArduboyCore::getInput()
 {
   uint8_t buttons;
-  
+
   // using ports here is ~100 bytes smaller than digitalRead()
 #ifdef AB_DEVKIT
   // down, left, up
@@ -325,6 +325,6 @@ uint8_t ArduboyCore::getInput()
   // B (right)
   buttons = buttons | (((~PINB) & B00010000) >> 2);
 #endif
-  
+
   return buttons;
 }
