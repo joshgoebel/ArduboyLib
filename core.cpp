@@ -223,10 +223,28 @@ void ArduboyCore::paintScreen(unsigned char image[])
 {
   for (int i = 0; i < (HEIGHT*WIDTH)/8; i++)
   {
+    // equivalent C:
+    //
     // SPI.transfer(image[i]);
 
+    // ASM Justification:
+    //
+    // paintScreen() is called by display() for every single frame and the
+    // waits that SPI.transfer introduces by default are note necessary if
+    // you are using it in a tight loop - your loop itself will burn a lot
+    // of that time (and you can pad the rest).  Just printing CPU usage in
+    // a 60FPS render loop was 30% usage (without doing anything else). Use
+    // of assembly gets us down to about 18% CPU usage for the same code.
+    //
+    // Reference: https://github.com/Arduboy/Arduboy/issues/27
+    //
+    // Timing display() using this speeds things up almost 3x:
+    //  - SPI /4 SPI.transfer(): 3700 micros
+    //  - SPI /2 SPI.transfer(): 2670 micros
+    //  - SPI /2 hand-optimized loop: 1170 micros
+
     // we need to burn 18 cycles between sets of SPDR
-    // 4 clock cycles
+    // 4 clock cycles (loop checking work)
     SPDR = image[i];
     // 7 clock cycles
     asm volatile(
