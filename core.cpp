@@ -171,7 +171,7 @@ void ArduboyCore::safeMode()
 {
   blank(); // too avoid random gibberish
   while (true) {
-    asm volatile("nop \n");
+    idle(); // sleep if we can
   }
 }
 
