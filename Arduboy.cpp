@@ -372,6 +372,20 @@ void Arduboy::fillScreen(uint8_t color)
   // equivalent C code: (note: the asm impliments it differently)
   //
   // for(int16_t i=0; i<1024; i++)  { sBuffer[i] = color; }  //sBuffer = (128*64) = 8192/8 = 1024 bytes.
+
+  // ASM Justification:
+  //
+  // clear (which calls fillScreen) is typically used for every single
+  // render loop.  To get the maximum FPS (or race to sleep) our core
+  // rendering code needs to be as fast as reasonably possible.  This is a
+  // big improvement thanks to unrolling the loop, switching to 8-bit math,
+  // and using ST Z+ vs slow array memory offset calculations. (sorry, I
+  // didn't bench this routine separately, was part of my larger
+  // performance work)
+  //
+  // Reference for how slow render loops are:
+  // https://github.com/Arduboy/Arduboy/issues/27
+  //
   asm volatile
   (
     // counter = 0
@@ -532,7 +546,7 @@ void Arduboy::fillTriangle
 }
 
 void Arduboy::drawBitmap
-(int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h, 
+(int16_t x, int16_t y, const uint8_t *bitmap, uint8_t w, uint8_t h,
  uint8_t color)
 {
   // no need to dar at all of we're offscreen
@@ -640,7 +654,7 @@ void Arduboy::setCursor(int16_t x, int16_t y)
 void Arduboy::setTextSize(uint8_t s)
 {
   // textsize must always be 1 or higher
-  textsize = max(1,s); 
+  textsize = max(1,s);
 }
 
 void Arduboy::setTextWrap(boolean w)
@@ -665,7 +679,7 @@ size_t Arduboy::write(uint8_t c)
     cursor_x += textsize*6;
     if (wrap && (cursor_x > (WIDTH - textsize*6)))
     {
-      // calling ourselves recursively for 'newline' is 
+      // calling ourselves recursively for 'newline' is
       // 12 bytes smaller than doing the same math here
       write('\n');
     }
