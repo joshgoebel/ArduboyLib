@@ -12,7 +12,7 @@ Arduboy::Arduboy()
   // lastFrameStart
   // lastFrameDurationMs
 
-  // font rendering  
+  // font rendering
   cursor_x = 0;
   cursor_y = 0;
   textsize = 1;
@@ -364,39 +364,33 @@ void Arduboy::fillRect
 
 void Arduboy::fillScreen(uint8_t color)
 {
-  // C version : 
+  if (color) {
+    // change any nonzero argument to b11111111 and insert into screen array.
+    color = 0xFF;
+  }
+
+  // equivalent C code: (note: the asm impliments it differently)
   //
-  // if (color) color = 0xFF;  //change any nonzero argument to b11111111 and insert into screen array.
-  // for(int16_t i=0; i<1024; i++)  { sBuffer[i] = color; }  //sBuffer = (128*64) = 8192/8 = 1024 bytes. 
-  
+  // for(int16_t i=0; i<1024; i++)  { sBuffer[i] = color; }  //sBuffer = (128*64) = 8192/8 = 1024 bytes.
   asm volatile
   (
-    // load color value into r27
-    "mov r27, %1 \n\t"
-    // if value is zero, skip assigning to 0xff
-    "cpse r27, __zero_reg__ \n\t"
-    "ldi r27, 0xff \n\t"
-    // load sBuffer pointer into Z
-    "movw  r30, %0\n\t"
     // counter = 0
     "clr __tmp_reg__ \n\t"
     "loopto:   \n\t"
     // (4x) push zero into screen buffer,
     // then increment buffer position
-    "st Z+, r27 \n\t"
-    "st Z+, r27 \n\t"
-    "st Z+, r27 \n\t"
-    "st Z+, r27 \n\t"
+    "st Z+, %[color] \n\t"
+    "st Z+, %[color] \n\t"
+    "st Z+, %[color] \n\t"
+    "st Z+, %[color] \n\t"
     // increase counter
     "inc __tmp_reg__ \n\t"
     // repeat for 256 loops
     // (until counter rolls over back to 0)
     "brne loopto \n\t"
-    // input: sBuffer, color
-    // modified: Z (r30, r31), r27
-    :
-    : "r" (sBuffer), "r" (color)
-    : "r30", "r31", "r27"
+    : // output: none
+    : [buffer] "z" (sBuffer), [color] "r" (color) // input: Z: sBuffer, R: color
+    : // modified: Z (r30, r31)
   );
 }
 
