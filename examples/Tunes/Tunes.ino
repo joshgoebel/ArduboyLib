@@ -192,6 +192,7 @@ void loop ()
     arduboy.invert(false);
   }
 
+  arduboy.clear();
   arduboy.setCursor(x,y);
   arduboy.print("Music\nDemo");
   arduboy.display();
